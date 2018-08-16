@@ -5818,6 +5818,13 @@ public final class Settings {
          */
         public static final String FULLSCREEN_GESTURES = "fullscreen_gestures";
 
+        /**
+         * Whether to show the battery info on the lockscreen while charging
+         * @hide
+         */
+        @Readable
+        public static final String LOCKSCREEN_BATTERY_INFO = "lockscreen_battery_info";
+
 	/**
          * Arcane Idle Manager
          * @hide
