@@ -91,5 +91,6 @@ public class SystemSettings {
         Settings.System.NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD,
         Settings.System.ENABLE_RIPPLE_EFFECT,
         Settings.System.LOCKSCREEN_BATTERY_INFO,
+        Settings.System.FULLSCREEN_GESTURES,
     };
 }
