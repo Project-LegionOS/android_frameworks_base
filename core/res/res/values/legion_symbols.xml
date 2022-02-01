@@ -119,4 +119,7 @@
     <java-symbol type="string" name="config_deviceInputFilterLibs" />
     <java-symbol type="string" name="config_deviceInputFilterClasses" />
 
+    <!-- App lock -->
+    <java-symbol type="string" name="unlock_application" />
+    <java-symbol type="array" name="config_appLockAllowedSystemApps" />
 </resources>
