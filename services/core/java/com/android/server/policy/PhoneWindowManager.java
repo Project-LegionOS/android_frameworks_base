@@ -169,6 +169,7 @@ import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.IDisplayFoldListener;
 import android.view.InputDevice;
+import android.view.InputFilter;
 import android.view.KeyCharacterMap;
 import android.view.KeyCharacterMap.FallbackAction;
 import android.view.KeyEvent;
@@ -648,6 +649,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private boolean mLockNowPending = false;
 
     private final List<DeviceKeyHandler> mDeviceKeyHandlers = new ArrayList<>();
+    private InputFilter mInputFilter;
+
     private int mTorchActionMode;
     private boolean mUnhandledTorchPower = false;
 
@@ -2279,6 +2282,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
         if (DEBUG_INPUT) {
             Slog.d(TAG, "" + mDeviceKeyHandlers.size() + " device key handlers loaded");
+        }
+
+        final String deviceInputFilterLibs = res.getString(R.string.config_deviceInputFilterLibs);
+        final String deviceInputFilterClasses = res.getString(R.string.config_deviceInputFilterClasses);
+
+        try {
+            PathClassLoader loader = new PathClassLoader(deviceInputFilterLibs, getClass().getClassLoader());
+            Class<?> klass = loader.loadClass(deviceInputFilterClasses);
+            Constructor<?> constructor = klass.getConstructor(Context.class);
+            mInputFilter = (InputFilter) constructor.newInstance(mContext);
+        } catch (Exception e) {
+            Slog.w(TAG, "Could not instantiate device input filter "
+                    + deviceInputFilterLibs + " from class "
+                    + deviceInputFilterClasses, e);
         }
     }
 
@@ -5413,6 +5430,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         mAutofillManagerInternal = LocalServices.getService(AutofillManagerInternal.class);
         mGestureLauncherService = LocalServices.getService(GestureLauncherService.class);
+
+        if (mInputFilter != null) {
+            mWindowManagerInternal.setInputFilter(mInputFilter);
+        }
     }
 
     /** {@inheritDoc} */
