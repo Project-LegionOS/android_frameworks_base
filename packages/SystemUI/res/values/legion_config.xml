@@ -103,4 +103,7 @@
 
     <!-- Update battery info every second when device is charging -->
     <bool name="config_alternateFastchargeInfoUpdate">false</bool>
+
+    <!-- Whether to find optimal display refresh rate when using udfps -->
+    <bool name="config_udfpsOptimalRefreshRate">true</bool>
 </resources>
