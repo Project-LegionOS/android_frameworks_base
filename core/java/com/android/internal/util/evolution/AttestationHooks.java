@@ -17,7 +17,6 @@
 package com.android.internal.util.evolution;
 
 import android.app.Application;
-import android.content.Context;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.SystemProperties;
@@ -30,12 +29,22 @@ import java.util.Map;
 
 /** @hide */
 public final class AttestationHooks {
-    private static final String TAG = "AttestationHooks";
+    private static final String TAG = "Attestation";
     private static final boolean DEBUG = false;
 
     private static final String PACKAGE_GMS = "com.google.android.gms";
     private static final String PACKAGE_FINSKY = "com.android.vending";
-    private static final String PACKAGE_RESTORE = "com.google.android.apps.restore";
+    private static final String PACKAGE_GPHOTOS = "com.google.android.apps.photos";
+
+    private static final Map<String, Object> sP1Props = new HashMap<>();
+    static {
+        sP1Props.put("BRAND", "google");
+        sP1Props.put("MANUFACTURER", "Google");
+        sP1Props.put("DEVICE", "marlin");
+        sP1Props.put("PRODUCT", "marlin");
+        sP1Props.put("MODEL", "Pixel XL");
+        sP1Props.put("FINGERPRINT", "google/marlin/marlin:10/QP1A.191005.007.A3/5972272:user/release-keys");
+    }
 
     private static final Map<String, Object> sP7Props = new HashMap<>();
     static {
@@ -44,7 +53,7 @@ public final class AttestationHooks {
         sP7Props.put("DEVICE", "cheetah");
         sP7Props.put("PRODUCT", "cheetah");
         sP7Props.put("MODEL", "Pixel 7 Pro");
-        sP7Props.put("FINGERPRINT", "google/cheetah/cheetah:13/TQ2A.230405.003.E1/9802792:user/release-keys");
+        sP7Props.put("FINGERPRINT", "google/cheetah/cheetah:13/TQ2A.230305.008.C1/9619669:user/release-keys");
     }
 
     private static volatile boolean sIsGms = false;
@@ -93,15 +102,10 @@ public final class AttestationHooks {
         setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.N_MR1);
     }
 
-    public static void initApplicationBeforeOnCreate(Context context) {
-        final String packageName = context.getPackageName();
-        final String processName = Application.getProcessName();
-        if (packageName.equals(PACKAGE_GMS)
-            || packageName.equals(PACKAGE_RESTORE)) {
-            if (processName.toLowerCase().contains("unstable")
-                || processName.toLowerCase().contains("persistent")
-                || processName.toLowerCase().contains("pixelmigrate")
-                || processName.toLowerCase().contains("restore")) {
+    public static void initApplicationBeforeOnCreate(Application app) {
+        if (PACKAGE_GMS.equals(app.getPackageName())) {
+            final String processName = Application.getProcessName();
+            if (processName.toLowerCase().contains("unstable")) {
                 sIsGms = true;
                 spoofBuildGms();
             } else {
@@ -110,8 +114,18 @@ public final class AttestationHooks {
             }
         }
 
-        if (packageName.equals(PACKAGE_FINSKY)) {
+        if (PACKAGE_FINSKY.equals(app.getPackageName())) {
             sIsFinsky = true;
+        }
+
+        if (PACKAGE_GPHOTOS.equals(app.getPackageName())) {
+            if (!SystemProperties.getBoolean("persist.sys.pixelprops.gphotos", false)) {
+                dlog("Photos spoofing disabled by system prop");
+                return;
+            } else {
+                dlog("Spoofing Pixel XL for Google Photos");
+                sP1Props.forEach((k, v) -> setPropValue(k, v));
+            }
         }
     }
 
