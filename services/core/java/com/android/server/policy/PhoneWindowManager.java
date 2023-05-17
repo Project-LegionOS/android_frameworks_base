@@ -768,7 +768,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 case MSG_CAMERA_LONG_PRESS:
                     mIsLongPress = true;
                     break;
-                case MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK:
+		case MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK: {
                     KeyEvent event = (KeyEvent) msg.obj;
                     dispatchMediaKeyWithWakeLockToAudioService(event);
                     dispatchMediaKeyWithWakeLockToAudioService(
