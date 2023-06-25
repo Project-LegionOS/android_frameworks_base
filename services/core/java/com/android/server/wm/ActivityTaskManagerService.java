@@ -271,6 +271,7 @@ import com.android.server.uri.NeededUriGrants;
 import com.android.server.uri.UriGrantsManagerInternal;
 import com.android.server.usage.AppStandbyInternal;
 
+import com.android.internal.util.evolution.PixelPropsUtils;
 import com.android.internal.util.legion.cutout.CutoutFullscreenController;
 
 import java.io.BufferedReader;
@@ -1975,7 +1976,9 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
 
     @Override
     public RootTaskInfo getFocusedRootTaskInfo() throws RemoteException {
-        enforceTaskPermission("getFocusedRootTaskInfo()");
+        if (!PixelPropsUtils.shouldBypassTaskPermission(mContext)) {
+            enforceTaskPermission("getFocusedRootTaskInfo()");
+        }
         final long ident = Binder.clearCallingIdentity();
         try {
             synchronized (mGlobalLock) {
@@ -3005,7 +3008,9 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
     /** Sets the task stack listener that gets callbacks when a task stack changes. */
     @Override
     public void registerTaskStackListener(ITaskStackListener listener) {
-        enforceTaskPermission("registerTaskStackListener()");
+        if (!PixelPropsUtils.shouldBypassTaskPermission(mContext)) {
+            enforceTaskPermission("registerTaskStackListener()");
+        }
         mTaskChangeNotificationController.registerTaskStackListener(listener);
     }
 
@@ -4770,10 +4775,16 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
 
         @Override
         public void acquire(int displayId) {
+            acquire(displayId, false /* isSwappingDisplay */);
+        }
+
+        @Override
+        public void acquire(int displayId, boolean isSwappingDisplay) {
             synchronized (mGlobalLock) {
                 if (!mSleepTokens.contains(displayId)) {
                     mSleepTokens.append(displayId,
-                            mRootWindowContainer.createSleepToken(mTag, displayId));
+                            mRootWindowContainer.createSleepToken(mTag, displayId,
+                                    isSwappingDisplay));
                     updateSleepIfNeededLocked();
                 }
             }
