@@ -5812,13 +5812,6 @@ public final class Settings {
                 "lockscreen_quick_unlock_control";
 
         /**
-         * Whether to show the battery info on the lockscreen while charging
-         * @hide
-         */
-        @Readable
-        public static final String LOCKSCREEN_BATTERY_INFO = "lockscreen_battery_info";
-
-        /**
          * Whether to hide navbar pill and keyboard space.
          * Default 0.
          * @hide
@@ -5982,7 +5975,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(VOLUME_BUTTON_MUSIC_CONTROL);
             PRIVATE_SETTINGS.add(VOLUME_ROCKER_WAKE);
             PRIVATE_SETTINGS.add(FORCE_FULLSCREEN_CUTOUT_APPS);
-            PRIVATE_SETTINGS.add(LOCKSCREEN_BATTERY_INFO);
             PRIVATE_SETTINGS.add(TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK);
             PRIVATE_SETTINGS.add(HIGH_TOUCH_SENSITIVITY_ENABLE);
             PRIVATE_SETTINGS.add(HIGH_TOUCH_POLLING_RATE_ENABLE);
