@@ -65,6 +65,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import com.android.internal.util.evolution.AttestationHooks;
+import com.android.internal.util.evolution.GamesPropsUtils;
 import com.android.internal.util.evolution.PixelPropsUtils;
 
 /**
@@ -1245,7 +1246,8 @@ public class Instrumentation {
         Application app = getFactory(context.getPackageName())
                 .instantiateApplication(cl, className);
         app.attach(context);
-        AttestationHooks.initApplicationBeforeOnCreate(context);
+        AttestationHooks.setProps(context);
+        GamesPropsUtils.setProps(context);
         PixelPropsUtils.setProps(context);
         return app;
     }
@@ -1264,7 +1266,8 @@ public class Instrumentation {
             ClassNotFoundException {
         Application app = (Application)clazz.newInstance();
         app.attach(context);
-        AttestationHooks.initApplicationBeforeOnCreate(context);
+        AttestationHooks.setProps(context);
+        GamesPropsUtils.setProps(context);
         PixelPropsUtils.setProps(context);
         return app;
     }
