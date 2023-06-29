@@ -47,6 +47,8 @@ import com.android.internal.logging.UiEventLogger;
 import com.android.internal.logging.UiEventLoggerImpl;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.systemui.biometrics.AuthController;
+import com.android.systemui.doze.DozeSensors.DozeSensorsUiEvent;
+import com.android.systemui.doze.DozeSensors.TriggerSensor;
 import com.android.systemui.plugins.SensorManagerPlugin;
 import com.android.systemui.settings.UserTracker;
 import com.android.systemui.statusbar.phone.DozeParameters;
@@ -105,6 +107,7 @@ public class DozeSensors {
     @VisibleForTesting
     protected TriggerSensor[] mTriggerSensors;
     private final ProximitySensor mProximitySensor;
+    private final boolean mProxSensorSupported;
 
     // Sensor callbacks
     private final Callback mSensorCallback; // receives callbacks on registered sensor events
@@ -168,6 +171,7 @@ public class DozeSensors {
         mProximitySensor.setTag(TAG);
         mSelectivelyRegisterProxSensors = dozeParameters.getSelectivelyRegisterSensorsUsingProx();
         mListeningProxSensors = !mSelectivelyRegisterProxSensors;
+        mProxSensorSupported = dozeParameters.getDozeSupportsProxSensor();
         mScreenOffUdfpsEnabled =
                 config.screenOffUdfpsEnabled(KeyguardUpdateMonitor.getCurrentUser());
         mDevicePostureController = devicePostureController;
@@ -283,15 +287,14 @@ public class DozeSensors {
                         false /* requiresAod */
                 ),
         };
-        if (resources.getBoolean(com.android.systemui.R.bool.doze_proximity_sensor_supported)) {
-            setProxListening(false);  // Don't immediately start listening when we register.
-            mProximitySensor.register(
-                    proximityEvent -> {
-                        if (proximityEvent != null) {
-                            mProxCallback.accept(!proximityEvent.getBelow());
-                        }
-                    });
-        }
+        if (!mProxSensorSupported) return;
+        setProxListening(false);  // Don't immediately start listening when we register.
+        mProximitySensor.register(
+                proximityEvent -> {
+                    if (proximityEvent != null) {
+                        mProxCallback.accept(!proximityEvent.getBelow());
+                    }
+                });
 
         mDevicePostureController.addCallback(mDevicePostureCallback);
     }
@@ -506,6 +509,7 @@ public class DozeSensors {
         for (TriggerSensor s : mTriggerSensors) {
             idpw.println("Sensor: " + s.toString());
         }
+        if (!mProxSensorSupported) return;
         idpw.println("ProxSensor: " + mProximitySensor.toString());
     }
 
@@ -513,7 +517,7 @@ public class DozeSensors {
      * @return true if prox is currently near, false if far or null if unknown.
      */
     public Boolean isProximityCurrentlyNear() {
-        return mProximitySensor.isNear();
+        return mProxSensorSupported ? mProximitySensor.isNear() : null;
     }
 
     @VisibleForTesting
@@ -608,7 +612,8 @@ public class DozeSensors {
                     ignoresSetting,
                     requiresProx,
                     true,
-                    immediatelyReRegister
+                    immediatelyReRegister,
+                    requiresAod
             );
         }
 
@@ -623,7 +628,8 @@ public class DozeSensors {
                 boolean ignoresSetting,
                 boolean requiresProx,
                 boolean performsProxCheck,
-                boolean immediatelyReRegister
+                boolean immediatelyReRegister,
+                boolean requiresAod
         ) {
             this(
                     new Sensor[]{ sensor },
@@ -668,7 +674,8 @@ public class DozeSensors {
                     requiresProx,
                     true,
                     immediatelyReRegister,
-                    posture
+                    posture,
+                    requiresAod
             );
         }
 
@@ -684,7 +691,8 @@ public class DozeSensors {
                 boolean requiresProx,
                 boolean performsProxCheck,
                 boolean immediatelyReRegister,
-                @DevicePostureController.DevicePostureInt int posture
+                @DevicePostureController.DevicePostureInt int posture,
+                boolean requiresAod
         ) {
             mSensors = sensors;
             mSetting = setting;
@@ -823,7 +831,8 @@ public class DozeSensors {
                     screenX = event.values[0];
                     screenY = event.values[1];
                 }
-                mSensorCallback.onSensorPulse(mPulseReason, mPerformsProxCheck, screenX, screenY, event.values);
+                mSensorCallback.onSensorPulse(mPulseReason, mPerformsProxCheck,
+                        screenX, screenY, event.values);
                 if (!mRegistered && mImmediatelyReRegister) {
                     updateListening();
                 }
