@@ -176,7 +176,6 @@ java_library_static {
         "overlayable_policy_aidl-java",
         "SurfaceFlingerProperties",
         "com.android.sysprop.watchdog",
-        "faceunlock_framework",
         "kotlin-stdlib",
         "kotlinx_coroutines_android",
         "kotlinx_coroutines",
