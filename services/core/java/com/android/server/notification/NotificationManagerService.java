@@ -8710,7 +8710,7 @@ public class NotificationManagerService extends SystemService {
                         r.getImportance(),
                         r.getRankingScore(),
                         r.isConversation(),
-                        r.getProposedImportance());
+                        r.getProposedImportance(),
                         r.isBubbleUpSuppressedByAppLock());
                 extractorDataBefore.put(r.getKey(), extractorData);
                 mRankingHelper.extractSignals(r);

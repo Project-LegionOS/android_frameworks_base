@@ -675,12 +675,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     private boolean mLockNowPending = false;
 
+    // Timeout for showing the keyguard after the screen is on, in case no "ready" is received.
+    private int mKeyguardDrawnTimeout = 1000;
+
     private final List<DeviceKeyHandler> mDeviceKeyHandlers = new ArrayList<>();
     private int mTorchActionMode;
     private boolean mUnhandledTorchPower = false;
-
-    // Timeout for showing the keyguard after the screen is on, in case no "ready" is received.
-    private int mKeyguardDrawnTimeout = 1000;
 
     private static final int MSG_DISPATCH_MEDIA_KEY_WITH_WAKE_LOCK = 3;
     private static final int MSG_DISPATCH_MEDIA_KEY_REPEAT_WITH_WAKE_LOCK = 4;
@@ -1944,7 +1944,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 break;
             case SCREENSHOT:
                 interceptScreenshotChord(
-                        TAKE_SCREENSHOT_FULLSCREEN, SCREENSHOT_KEY_OTHER, 0 /*pressDelay*/);
+                        SCREENSHOT_KEY_OTHER, 0 /*pressDelay*/);
                 break;
             default:
                 break;
@@ -2197,8 +2197,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mSwipeToScreenshot = new SwipeToScreenshotListener(context, new SwipeToScreenshotListener.Callbacks() {
             @Override
             public void onSwipeThreeFinger() {
-                interceptScreenshotChord(
-                        TAKE_SCREENSHOT_FULLSCREEN, SCREENSHOT_KEY_OTHER, 0 /*pressDelay*/);
+                interceptScreenshotChord(SCREENSHOT_KEY_OTHER, 0 /*pressDelay*/);
             }
         });
         mWakeGestureListener = new MyWakeGestureListener(mContext, mHandler);
