@@ -1356,9 +1356,10 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
 
     private boolean isFaceDisabled(int userId) {
         // TODO(b/140035044)
-        return (mDevicePolicyManager.getKeyguardDisabledFeatures(null, userId)
+        return whitelistIpcs(() ->
+                (mDevicePolicyManager.getKeyguardDisabledFeatures(null, userId)
                         & DevicePolicyManager.KEYGUARD_DISABLE_FACE) != 0
-                || isSimPinSecure();
+                || isSimPinSecure());
     }
 
     /**
