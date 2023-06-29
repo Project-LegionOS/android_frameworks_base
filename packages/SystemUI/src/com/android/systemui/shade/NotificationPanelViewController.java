@@ -555,8 +555,6 @@ public final class NotificationPanelViewController implements Dumpable {
 
     private final TunerService mTunerService;
 
-    private boolean mOneFingerQuickSettingsIntercept;
-
     private final KeyguardBottomAreaViewModel mKeyguardBottomAreaViewModel;
     private final KeyguardBottomAreaInteractor mKeyguardBottomAreaInteractor;
     private float mMinExpandHeight;
@@ -2510,7 +2508,7 @@ public final class NotificationPanelViewController implements Dumpable {
                 && !mKeyguardBypassController.getBypassEnabled()) {
             alpha *= mClockPositionResult.clockAlpha;
         }
-        if (mQsExpandImmediate && !mQsFullyExpanded) {
+        if (mQsController.isExpandImmediate() && !mQsController.getFullyExpanded()) {
             alpha = 0f;
         }
         mNotificationStackScrollLayoutController.setAlpha(alpha);
@@ -4555,7 +4553,8 @@ public final class NotificationPanelViewController implements Dumpable {
         @Override
         public void onTuningChanged(String key, String newValue) {
             if (STATUS_BAR_QUICK_QS_PULLDOWN.equals(key)) {
-                mOneFingerQuickSettingsIntercept = TunerService.parseIntegerSwitch(newValue, true);
+                mQsController.setOneFingerQsIntercept(
+                        TunerService.parseIntegerSwitch(newValue, true));
             }
         }
     }
@@ -4880,7 +4879,7 @@ public final class NotificationPanelViewController implements Dumpable {
             // Double tap to sleep on lockscreen
             if ((mDoubleTapToWakeEnabled && isOnKeyguard())
                     // Double tap to sleep on statusbar
-                    || (mDoubleTapToSleepEnabled && !mQsExpanded
+                    || (mDoubleTapToSleepEnabled && !mQsController.getExpanded()
                     && event.getY() < mStatusBarMinHeight)) {
                 mDoubleTapGestureListener.onTouchEvent(event);
             }
