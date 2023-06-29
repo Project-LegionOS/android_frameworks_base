@@ -85,8 +85,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
-import com.android.internal.util.custom.faceunlock.FaceUnlockUtils;
-
 /**
  * System service that arbitrates the modality for BiometricPrompt to use.
  */
@@ -216,6 +214,10 @@ public class BiometricService extends SystemService {
         private static final boolean DEFAULT_APP_ENABLED = true;
         private static final boolean DEFAULT_ALWAYS_REQUIRE_CONFIRMATION = false;
 
+        // Some devices that shipped before S already have face-specific settings. Instead of
+        // migrating, which is complicated, let's just keep using the existing settings.
+        private final boolean mUseLegacyFaceOnlySettings;
+
         // Only used for legacy face-only devices
         private final Uri FACE_UNLOCK_KEYGUARD_ENABLED =
                 Settings.Secure.getUriFor(Settings.Secure.FACE_UNLOCK_KEYGUARD_ENABLED);
@@ -255,13 +257,18 @@ public class BiometricService extends SystemService {
             final boolean hasFace = context.getPackageManager()
                     .hasSystemFeature(PackageManager.FEATURE_FACE);
 
+            // Use the legacy setting on face-only devices that shipped on or before Q
+            mUseLegacyFaceOnlySettings =
+                    Build.VERSION.DEVICE_INITIAL_SDK_INT <= Build.VERSION_CODES.Q
+                    && hasFace && !hasFingerprint;
+
             updateContentObserver();
         }
 
         public void updateContentObserver() {
             mContentResolver.unregisterContentObserver(this);
 
-            if (FaceUnlockUtils.isFaceUnlockSupported()) {
+            if (mUseLegacyFaceOnlySettings) {
                 mContentResolver.registerContentObserver(FACE_UNLOCK_KEYGUARD_ENABLED,
                         false /* notifyForDescendants */,
                         this /* observer */,
@@ -331,7 +338,7 @@ public class BiometricService extends SystemService {
 
         public boolean getEnabledOnKeyguard(int userId) {
             if (!mBiometricEnabledOnKeyguard.containsKey(userId)) {
-                if (FaceUnlockUtils.isFaceUnlockSupported()) {
+                if (mUseLegacyFaceOnlySettings) {
                     onChange(true /* selfChange */, FACE_UNLOCK_KEYGUARD_ENABLED, userId);
                 } else {
                     onChange(true /* selfChange */, BIOMETRIC_KEYGUARD_ENABLED, userId);
@@ -342,7 +349,7 @@ public class BiometricService extends SystemService {
 
         public boolean getEnabledForApps(int userId) {
             if (!mBiometricEnabledForApps.containsKey(userId)) {
-                if (FaceUnlockUtils.isFaceUnlockSupported()) {
+                if (mUseLegacyFaceOnlySettings) {
                     onChange(true /* selfChange */, FACE_UNLOCK_APP_ENABLED, userId);
                 } else {
                     onChange(true /* selfChange */, BIOMETRIC_APP_ENABLED, userId);
@@ -1316,6 +1323,9 @@ public class BiometricService extends SystemService {
     }
 
     private void dumpInternal(PrintWriter pw) {
+        pw.println("Legacy Settings: " + mSettingObserver.mUseLegacyFaceOnlySettings);
+        pw.println();
+
         pw.println("Sensors:");
         for (BiometricSensor sensor : mSensors) {
             pw.println(" " + sensor);

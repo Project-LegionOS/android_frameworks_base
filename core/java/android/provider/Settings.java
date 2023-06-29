@@ -11572,12 +11572,6 @@ public final class Settings {
          */
         public static final String SHOW_CLIPBOARD_OVERLAY = "show_clipboard_overlay";
 
-        /**
-         * Face Unlock Method
-         * @hide
-         */
-        public static final String FACE_UNLOCK_METHOD = "face_unlock_method";
-
 	/**
          * Control whether FLAG_SECURE is ignored for all windows.
          * @hide
