@@ -97,9 +97,6 @@
     <!-- Whether device can force navbar disabling -->
     <bool name="config_canForceDisableNavigationBar">false</bool>
 
-    <!-- Whether device supports gestures on fingerprint sensor -->
-    <bool name="config_supportsGesturesOnFingerprintSensor">false</bool>
-
     <!-- Enable face auth only when swiping security view -->
     <bool name="config_faceAuthOnlyOnSecurityView">false</bool>
 
