@@ -33,8 +33,7 @@ public class DeviceKeysConstants {
         VOICE_SEARCH,
         LAUNCH_CAMERA,
         SLEEP,
-        SPLIT_SCREEN,
-        SCREENSHOT;
+        SPLIT_SCREEN;
 
         public static Action fromIntSafe(int id) {
             if (id < NOTHING.ordinal() || id > Action.values().length) {
