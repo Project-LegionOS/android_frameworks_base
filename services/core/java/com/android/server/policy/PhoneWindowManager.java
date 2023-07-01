@@ -581,13 +581,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     DisplayRotation mDefaultDisplayRotation;
     DisplayPolicy mDefaultDisplayPolicy;
 
-    // Whether to lock the device after the next app transition has finished.
-    private boolean mLockAfterAppTransitionFinished;
-
+    // What we do when the user long presses on home
     private int mLongPressOnHomeBehavior;
 
     // What we do when the user double-taps on home
     private int mDoubleTapOnHomeBehavior;
+
+    // Whether to lock the device after the next app transition has finished.
+    private boolean mLockAfterAppTransitionFinished;
 
     // Allowed theater mode wake actions
     private boolean mAllowTheaterModeWakeFromKey;
@@ -648,14 +649,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     private boolean mLockNowPending = false;
 
+    // Timeout for showing the keyguard after the screen is on, in case no "ready" is received.
+    private int mKeyguardDrawnTimeout = 1000;
+
     private final List<DeviceKeyHandler> mDeviceKeyHandlers = new ArrayList<>();
     private InputFilter mInputFilter;
 
     private int mTorchActionMode;
     private boolean mUnhandledTorchPower = false;
-
-    // Timeout for showing the keyguard after the screen is on, in case no "ready" is received.
-    private int mKeyguardDrawnTimeout = 1000;
 
     private static final int MSG_DISPATCH_MEDIA_KEY_WITH_WAKE_LOCK = 3;
     private static final int MSG_DISPATCH_MEDIA_KEY_REPEAT_WITH_WAKE_LOCK = 4;
@@ -1030,9 +1031,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             powerMultiPressAction(eventTime, interactive, mTriplePressOnPowerBehavior);
         } else if (count > 3 && count <= getMaxMultiPressPowerCount()) {
             Slog.d(TAG, "No behavior defined for power press count " + count);
-        } else if (count == 1 && interactive && !beganFromNonInteractive) {
+        } else if (count == 1 && interactive) {
             if (mUnhandledTorchPower && beganFromNonInteractive && torchActionEnabled) {
                 wakeUpFromPowerKey(eventTime);
+                return;
+            }
+            if (beganFromNonInteractive) {
                 return;
             }
             if (mSideFpsEventHandler.shouldConsumeSinglePress(eventTime)) {
@@ -2051,8 +2055,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mSwipeToScreenshot = new SwipeToScreenshotListener(context, new SwipeToScreenshotListener.Callbacks() {
             @Override
             public void onSwipeThreeFinger() {
-                interceptScreenshotChord(
-                        TAKE_SCREENSHOT_FULLSCREEN, SCREENSHOT_KEY_OTHER, 0 /*pressDelay*/);
+                interceptScreenshotChord(SCREENSHOT_KEY_OTHER, 0 /*pressDelay*/);
             }
         });
         mWakeGestureListener = new MyWakeGestureListener(mContext, mHandler);
