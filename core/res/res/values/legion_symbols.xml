@@ -87,10 +87,6 @@
     <!-- Whether to cancel fingerprint operation if not idle -->
     <java-symbol type="bool" name="config_fpCancelIfNotIdle" />
 
-    <!-- Button backlight -->
-    <java-symbol type="integer" name="config_deviceSupportsButtonBrightnessControl" />
-    <java-symbol type="dimen" name="config_buttonBrightnessSettingDefaultFloat" />
-
     <!-- Enable face auth only when swiping security view -->
     <java-symbol type="bool" name="config_faceAuthOnlyOnSecurityView" />
 
