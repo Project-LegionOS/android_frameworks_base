@@ -5557,14 +5557,6 @@ public final class Settings {
         public static final String DESKTOP_MODE = "desktop_mode";
 
         /**
-         * Whether the button backlight is only lit when pressed (and not when screen is touched)
-         * The value is boolean (1 or 0).
-         * @hide
-         */
-        public static final String BUTTON_BACKLIGHT_ONLY_WHEN_PRESSED =
-                "button_backlight_only_when_pressed";
-
-        /**
          * Whether to play the camera shutter sound on taking a screenshot.
          * @hide
          */
@@ -5857,7 +5849,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK);
             PRIVATE_SETTINGS.add(HIGH_TOUCH_SENSITIVITY_ENABLE);
             PRIVATE_SETTINGS.add(HIGH_TOUCH_POLLING_RATE_ENABLE);
-            PRIVATE_SETTINGS.add(BUTTON_BACKLIGHT_ONLY_WHEN_PRESSED);
         }
 
         /**
