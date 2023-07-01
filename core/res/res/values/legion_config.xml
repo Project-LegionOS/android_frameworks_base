@@ -94,9 +94,6 @@
     <integer name="config_deviceSupportsButtonBrightnessControl">0</integer>
     <dimen name="config_buttonBrightnessSettingDefaultFloat">1.0</dimen>
 
-    <!-- Whether device can force navbar disabling -->
-    <bool name="config_canForceDisableNavigationBar">false</bool>
-
     <!-- Enable face auth only when swiping security view -->
     <bool name="config_faceAuthOnlyOnSecurityView">false</bool>
 
@@ -108,5 +105,4 @@
     <!-- InputFilter Class-->
     <string name="config_deviceInputFilterLibs" translatable="false"></string>
     <string name="config_deviceInputFilterClasses" translatable="false"></string>
-
 </resources>

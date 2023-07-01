@@ -5563,18 +5563,6 @@ public final class Settings {
          */
         public static final String BUTTON_BACKLIGHT_ONLY_WHEN_PRESSED =
                 "button_backlight_only_when_pressed";
-        
-        /**
-         * Force show navigation bar setting.
-         * @hide
-         */
-        public static final String NAVIGATION_BAR_SHOW = "navigation_bar_show";
-
-        /**
-         * Force show navigation bar setting.
-         * @hide
-         */
-        public static final String NAVIGATION_BAR_MODE_OVERLAY = "navigation_bar_mode_overlay";
 
         /**
          * Whether to play the camera shutter sound on taking a screenshot.
@@ -5870,8 +5858,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(HIGH_TOUCH_SENSITIVITY_ENABLE);
             PRIVATE_SETTINGS.add(HIGH_TOUCH_POLLING_RATE_ENABLE);
             PRIVATE_SETTINGS.add(BUTTON_BACKLIGHT_ONLY_WHEN_PRESSED);
-            PRIVATE_SETTINGS.add(NAVIGATION_BAR_SHOW);
-            PRIVATE_SETTINGS.add(NAVIGATION_BAR_MODE_OVERLAY);
         }
 
         /**
