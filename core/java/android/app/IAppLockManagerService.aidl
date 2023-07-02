@@ -24,7 +24,9 @@ import android.app.AppLockData;
  */
 interface IAppLockManagerService {
 
-    void setShouldProtectApp(in String packageName, in boolean secure, in int userId);
+    void addPackage(in String packageName, in int userId);
+
+    void removePackage(in String packageName, in int userId);
 
     long getTimeout(in int userId);
 
@@ -43,8 +45,4 @@ interface IAppLockManagerService {
     void setPackageHidden(in String packageName, boolean hide, in int userId);
 
     List<String> getHiddenPackages(in int userId);
-
-    boolean isPackageProtected(in String packageName, in int userId);
-
-    boolean isPackageHidden(in String packageName, in int userId);
 }
