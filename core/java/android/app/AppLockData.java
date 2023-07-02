@@ -23,7 +23,7 @@ import android.os.Parcelable;
 
 /**
  * Class to hold package level information about an
- * application for app lock.
+ * application protected with app lock.
  *
  * @hide
  */
@@ -44,26 +44,22 @@ public final class AppLockData implements Parcelable {
     };
 
     private final String mPackageName;
-    private final boolean mShouldProtectApp;
     private final boolean mShouldRedactNotification;
     private final boolean mHideFromLauncher;
 
     /** @hide */
     public AppLockData(
         @NonNull final String packageName,
-        final boolean shouldProtectApp,
         final boolean shouldRedactNotification,
         final boolean hideFromLauncher
     ) {
         mPackageName = packageName;
-        mShouldProtectApp = shouldProtectApp;
         mShouldRedactNotification = shouldRedactNotification;
         mHideFromLauncher = hideFromLauncher;
     }
 
     private AppLockData(final Parcel in) {
         mPackageName = in.readString();
-        mShouldProtectApp = in.readBoolean();
         mShouldRedactNotification = in.readBoolean();
         mHideFromLauncher = in.readBoolean();
     }
@@ -71,10 +67,6 @@ public final class AppLockData implements Parcelable {
     @NonNull
     public String getPackageName() {
         return mPackageName;
-    }
-
-    public boolean getShouldProtectApp() {
-        return mShouldProtectApp;
     }
 
     public boolean getShouldRedactNotification() {
@@ -93,7 +85,6 @@ public final class AppLockData implements Parcelable {
     @Override
     public void writeToParcel(final Parcel parcel, final int flags) {
         parcel.writeString(mPackageName);
-        parcel.writeBoolean(mShouldProtectApp);
         parcel.writeBoolean(mShouldRedactNotification);
         parcel.writeBoolean(mHideFromLauncher);
     }
@@ -102,7 +93,6 @@ public final class AppLockData implements Parcelable {
     @NonNull
     public String toString() {
         return "AppLockData[ packageName = " + mPackageName +
-            ", shouldProtectApp = " + mShouldProtectApp +
             ", shouldRedactNotification = " + mShouldRedactNotification +
             ", hideFromLauncher = " + mHideFromLauncher + " ]";
     }
