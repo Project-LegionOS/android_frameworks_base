@@ -867,7 +867,7 @@ class AppLockManagerService(
             currentUserId,
             Process.myUid()
         ).filter {
-            EvolutionUtils.launchablePackages(context).contains(it.packageName) ||
+            LegionUtils.launchablePackages(context).contains(it.packageName) ||
                 whiteListedSystemApps.contains(it.packageName)
         }.map { it.packageName }
         var changed = false
