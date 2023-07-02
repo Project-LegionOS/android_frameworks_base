@@ -107,7 +107,7 @@ public class DozeSensors {
     @VisibleForTesting
     protected TriggerSensor[] mTriggerSensors;
     private final ProximitySensor mProximitySensor;
-    private final boolean mProxSensorSupported;
+    private boolean mEnableProx;
 
     // Sensor callbacks
     private final Callback mSensorCallback; // receives callbacks on registered sensor events
@@ -171,7 +171,7 @@ public class DozeSensors {
         mProximitySensor.setTag(TAG);
         mSelectivelyRegisterProxSensors = dozeParameters.getSelectivelyRegisterSensorsUsingProx();
         mListeningProxSensors = !mSelectivelyRegisterProxSensors;
-        mProxSensorSupported = dozeParameters.getDozeSupportsProxSensor();
+        mEnableProx = resources.getBoolean(com.android.systemui.R.bool.doze_proximity_sensor_supported);
         mScreenOffUdfpsEnabled =
                 config.screenOffUdfpsEnabled(KeyguardUpdateMonitor.getCurrentUser());
         mDevicePostureController = devicePostureController;
@@ -287,17 +287,15 @@ public class DozeSensors {
                         false /* requiresAod */
                 ),
         };
-        if (!mProxSensorSupported) return;
         setProxListening(false);  // Don't immediately start listening when we register.
-        mProximitySensor.register(
-                proximityEvent -> {
-                    if (proximityEvent != null) {
-                        mProxCallback.accept(!proximityEvent.getBelow());
-                    }
-                });
-
-        mDevicePostureController.addCallback(mDevicePostureCallback);
-    }
+        if (mEnableProx) {
+            mProximitySensor.register(
+                    proximityEvent -> {
+                        if (proximityEvent != null) {
+                            mProxCallback.accept(!proximityEvent.getBelow());
+                        }
+                    });
+        }
 
     private boolean udfpsLongPressConfigured() {
         return mUdfpsEnrolled
@@ -509,15 +507,15 @@ public class DozeSensors {
         for (TriggerSensor s : mTriggerSensors) {
             idpw.println("Sensor: " + s.toString());
         }
-        if (!mProxSensorSupported) return;
-        idpw.println("ProxSensor: " + mProximitySensor.toString());
+        if (mEnableProx) // Useless
+            idpw.println("ProxSensor: " + mProximitySensor.toString());
     }
 
     /**
      * @return true if prox is currently near, false if far or null if unknown.
      */
     public Boolean isProximityCurrentlyNear() {
-        return mProxSensorSupported ? mProximitySensor.isNear() : null;
+        return mEnableProx ? mProximitySensor.isNear() : null;
     }
 
     @VisibleForTesting
