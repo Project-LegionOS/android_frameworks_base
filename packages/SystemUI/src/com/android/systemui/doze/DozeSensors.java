@@ -297,6 +297,9 @@ public class DozeSensors {
                     });
         }
 
+        mDevicePostureController.addCallback(mDevicePostureCallback);
+    }
+
     private boolean udfpsLongPressConfigured() {
         return mUdfpsEnrolled
                 && (mConfig.alwaysOnEnabled(mUserTracker.getUserId()) || mScreenOffUdfpsEnabled);
