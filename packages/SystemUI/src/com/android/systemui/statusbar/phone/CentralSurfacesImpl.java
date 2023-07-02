@@ -243,7 +243,6 @@ import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.statusbar.window.StatusBarWindowController;
 import com.android.systemui.statusbar.window.StatusBarWindowStateController;
 import com.android.systemui.surfaceeffects.ripple.RippleShader.RippleShape;
-import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.DumpUtilsKt;
 import com.android.systemui.util.WallpaperController;
 import com.android.systemui.util.concurrency.DelayableExecutor;
@@ -280,7 +279,7 @@ import dagger.Lazy;
  * </b>
  */
 @SysUISingleton
-public class CentralSurfacesImpl implements CoreStartable, TunerService.Tunable, CentralSurfaces {
+public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
 
     private static final String BANNER_ACTION_CANCEL =
             "com.android.systemui.statusbar.banner_action_cancel";
@@ -535,7 +534,6 @@ public class CentralSurfacesImpl implements CoreStartable, TunerService.Tunable,
     private final KeyguardUnlockAnimationController mKeyguardUnlockAnimationController;
     private final MessageRouter mMessageRouter;
     private final WallpaperManager mWallpaperManager;
-    private final TunerService mTunerService;
     private final UserTracker mUserTracker;
     private final Provider<FingerprintManager> mFingerprintManager;
 
@@ -779,7 +777,6 @@ public class CentralSurfacesImpl implements CoreStartable, TunerService.Tunable,
             InteractionJankMonitor jankMonitor,
             DeviceStateManager deviceStateManager,
             WiredChargingRippleController wiredChargingRippleController,
-            TunerService tunerService,
             IDreamManager dreamManager,
             Lazy<CameraLauncher> cameraLauncherLazy,
             Lazy<LightRevealScrimViewModel> lightRevealScrimViewModelLazy,
@@ -865,7 +862,6 @@ public class CentralSurfacesImpl implements CoreStartable, TunerService.Tunable,
         mWallpaperManager = wallpaperManager;
         mJankMonitor = jankMonitor;
         mCameraLauncherLazy = cameraLauncherLazy;
-        mTunerService = tunerService;
         mAlternateBouncerInteractor = alternateBouncerInteractor;
         mUserTracker = userTracker;
         mFingerprintManager = fingerprintManager;
