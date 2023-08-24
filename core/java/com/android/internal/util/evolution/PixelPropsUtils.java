@@ -56,18 +56,12 @@ public class PixelPropsUtils {
     private static final String DEVICE = "ro.product.device";
     private static final boolean DEBUG = false;
 
-    private static final Map<String, Object> propsToChangeS23;
     private static final Map<String, Object> propsToChangeGeneric;
     private static final Map<String, Object> propsToChangePixel7Pro;
     private static final Map<String, Object> propsToChangePixel5a;
     private static final Map<String, Object> propsToChangePixel5;
     private static final Map<String, Object> propsToChangeMeizu;
     private static final Map<String, ArrayList<String>> propsToKeep;
-
-    private static final String[] packagesToChangeS23 = {
-            "com.google.android.youtube",
-            "com.google.android.apps.youtube.music",
-    };
 
     // Packages to Spoof as Pixel 7 Pro
     private static final String[] packagesToChangePixel7Pro = {
@@ -104,8 +98,10 @@ public class PixelPropsUtils {
             "com.google.android.apps.tycho",
             "com.google.android.apps.wearables.maestro.companion",
             "com.google.android.apps.youtube.kids",
+            "com.google.android.apps.youtube.music",
             "com.google.android.euicc",
             "com.google.android.setupwizard",
+            "com.google.android.youtube",
             "com.google.ar.core"
     };
 
@@ -182,12 +178,6 @@ public class PixelPropsUtils {
         propsToChangeMeizu.put("DISPLAY", "Flyme");
         propsToChangeMeizu.put("PRODUCT", "meizu_16thPlus_CN");
         propsToChangeMeizu.put("MODEL", "meizu 16th Plus");
-        propsToChangeS23 = new HashMap<>();
-        propsToChangeS23.put("BRAND", "samsung");
-        propsToChangeS23.put("MANUFACTURER", "samsung");
-        propsToChangeS23.put("DEVICE", "dm1q");
-        propsToChangeS23.put("MODEL", "SM-S911B");
-        propsToChangeS23.put("FINGERPRINT", "samsung/dm1qxxx/dm1q:13/TP1A.220624.014/S911BXXS3AWF7:user/release-keys");
     }
 
     public static void setProps(Context context) {
@@ -256,8 +246,6 @@ public class PixelPropsUtils {
                     || (Arrays.asList(extraPackagesToChange).contains(packageName))) {
                 if (isPixelDevice) return;
                 propsToChange.putAll(propsToChangePixel7Pro);
-            } else if (Arrays.asList(packagesToChangeS23).contains(packageName)) {
-                propsToChange.putAll(propsToChangeS23);
             } else {
                 propsToChange.putAll(propsToChangePixel5a);
             }
